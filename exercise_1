@@ -1,0 +1,161 @@
+#1 
+print("Hello world")
+
+# 2
+message = "Level Two"
+
+# Add a line below to print this variable
+print(message)
+
+# 3.
+print(type(message))
+
+# 4
+a = 123
+b = 654
+c = a + b
+print (c)
+
+# 6
+a = 100
+print(a)
+c = 50
+print(c)
+d = 10 + a - c
+print(d)
+
+# 7
+greeting = 'Hi '
+name = 'Ronen'  
+message = greeting + name
+print(message)
+
+# 8. Try adding a number and a string together and you get an error:
+# age =  # enter your age here (as a number)
+age = 35 
+# print(name + ' is ' + age + ' years old')
+print(name + ' is ' + age + ' years old')
+# => type error 
+
+# 9. We can convert numbers to strings :
+
+print(name + ' is ' + str(age) + ' years old')
+# Or 
+age = '35' 
+# print(name + ' is ' + age + ' years old')
+print(name + ' is ' + age + ' years old')
+
+# 10
+raspberry_pi_is_fun = True
+raspberry_pi_is_expensive = False
+bobs_age = 15
+your_age = 35 
+# print(your_age == bobs_age)  # this prints either True or False
+print(your_age == bobs_age)
+
+# 11
+bob_is_older = bobs_age > your_age
+print(bob_is_older)
+
+# 12
+money = 500
+phone_cost = 240
+tablet_cost = 200
+total_cost = phone_cost + tablet_cost
+can_afford_both = money > total_cost
+if can_afford_both:
+    message = "You have enough money for both"
+else:
+    message = "You can't afford both devices"
+print(message)
+raspberry_pi = 25
+pies = 3 * raspberry_pi
+total_cost = total_cost + pies
+if total_cost <= money:
+    message = "You have enough money for 3 raspberry pies as well"
+else:
+    message = "You can't afford 3 raspberry pies"
+print(message)
+
+# 13 list
+colours = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Violet']
+#  check if a colour is in the list
+print('Black' in colours)
+# You can add to the list with append
+colours.append('Black')
+colours.append('White')
+print('Black' in colours)
+more_colours = ['Gray', 'Navy', 'Pink']
+colours.extend(more_colours)
+print(colours)
+
+# 14.  adding lists together 
+primary_colours = ['Red', 'Blue', 'Yellow']
+secondary_colours = ['Purple', 'Orange', 'Green']
+main_colours = primary_colours + secondary_colours
+print(main_colours)
+
+# 15
+all_colours = colours + main_colours
+
+# 16
+even_numbers = [2, 4, 6, 8, 10, 12]
+multiples_of_three = [3, 6, 9, 12]
+numbers = even_numbers + multiples_of_three
+ print(numbers, len(numbers))
+numbers_set = set(numbers)
+print(numbers_set, len(numbers_set))
+colour_set = set(all_colours)
+
+# 17. list
+my_class = ['Sarah', 'Bob', 'Jim', 'Tom', 'Lucy', 'Sophie', 'Liz', 'Ed']
+
+# 18. 
+full_name = 'Dominic Adrian Smith'
+first_letter = full_name[0]
+last_letter = full_name[19]
+first_three = full_name[:3]  # [0:3 also works]
+last_three = full_name[-3:]  # [17:] and [17:20] also work
+middle = full_name[8:14]
+
+# 19
+my_sentence = "Hello, my name is Fred"
+parts = my_sentence.split(',')
+ print(parts)
+ print(type(parts))  
+my_long_sentence = "This is a very very very very very very long sentence"
+
+# 20. tuple
+person = ('Bobby', 26)
+ print(person[0] + ' is ' + str(person[1]) + ' years old')
+students = [
+    ('Dave', 12),
+    ('Sophia', 13),
+    ('Sam', 12),
+    ('Kate', 11),
+    ('Daniel', 10)
+]
+
+# 21. dictionary
+
+
+addresses = {
+    'Lauren': '0161 5673 890',
+    'Amy': '0115 8901 165',
+    'Daniel': '0114 2290 542',
+    'Emergency': '999'
+}
+ print(addresses['Amy'])
+print('David' in addresses)  # [False]
+print('Daniel' in addresses)  # [True]
+print('999' in addresses)  # [False]
+print('999' in addresses.values())  # [True]
+print(999 in addresses.values())  # [False]
+addresses['Amy'] = '0115 236 359'
+print(addresses['Amy'])
+
+#22 Delete Daniel from the dictinary
+
+print('Daniel' in addresses)  # [True]
+del addresses['Daniel']
+print('Daniel' in addresses)  # [False]
