@@ -1,0 +1,66 @@
+import numpy as np
+from sklearn.datasets import load_iris
+my_iris = load_iris()
+X = my_iris["data"][:,0:2]
+y = np.array([1 if x==0 else 0 for x in my_iris["target"]])
+
+
+import matplotlib.pyplot as plt
+plt.scatter(X[:,0], X[:,1], c=y)
+plt.show()
+
+
+def sigmoid(z):
+    return 1/(1+np.exp(-1*z))
+
+
+sigmoid_x = np.linspace(-5, 5, 100)
+plt.plot(sigmoid_x, [sigmoid(x) for x in sigmoid_x])
+plt.show()
+
+
+def log_likelihood(theta, y, h):
+    m = len(y)
+    return (-(np.transpose(y).dot(np.log(h)))-(np.transpose(1-y).dot(np.log(1-h))))/m
+
+
+def gradient(h, y, X):
+    m = len(y)
+    return (np.transpose(y.reshape(m,1)-h).dot(X))/m
+
+
+def create_train_test(percent, X, y):
+    m = len(y)
+    permutation = np.random.permutation(m)
+    X = X[permutation]
+    y = y[permutation]
+    split_index = int(m * percent)
+    train = (X[:split_index,:], y[:split_index])
+    test = (X[split_index:,:], y[split_index:])
+    return train, test
+
+
+def gradient_descent(X, y, epochs, alpha, num_print_debug=1):
+    m, n = X.shape
+    theta = np.random.rand(1,2)
+    print_index = int(epochs/num_print_debug)
+    for i in range(epochs):
+        h = sigmoid(X.dot(np.transpose(theta)))
+        if (i%print_index == 0):
+            cur_loss = log_likelihood(theta, y, h)
+            print(cur_loss)
+        theta += alpha * gradient(h, y, X)
+    return theta
+
+
+def print_results(X, y, theta, name):
+    h = sigmoid(X.dot(np.transpose(theta)))
+    pred = [1 if x>=0.5 else 0 for x in h]
+    precision = sum([x==y for x,y in zip(pred, y)])/len(y)
+    likelihood = log_likelihood(theta, y, h)
+    print(f"{name} precision: {precision*100}%, log likelihood: {likelihood}")
+
+train, test = create_train_test(0.7, X, y)
+theta = gradient_descent(train[0], train[1], 1000, 0.5)
+print_results(train[0], train[1], theta, "Train")
+print_results(test[0], test[1], theta, "Test")
