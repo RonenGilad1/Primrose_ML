@@ -1,0 +1,113 @@
+#1 
+import pandas as pd
+url = 'https://raw.githubusercontent.com/justmarkham/DAT8/master/data/chipotle.tsv'
+    
+chipo = pd.read_csv(url, sep = '\t')
+chipo.head(10)
+# chipo['choice_description'][4]
+chipo.info()#
+
+# OR
+
+chipo.shape[0]
+# 4622 observations
+chipo.shape[1]
+chipo.columns
+chipo.index
+chipo.item_name.value_counts().head(1)
+mostOrd = chipo.item_name.value_counts().max() #or mostOrd = chipo["item_name"].max()
+mostOrd
+chipo.choice_description.value_counts().head()
+total_items_orders = chipo.quantity.sum()
+total_items_orders
+
+dollarizer = lambda x: float(x[1:-1])
+chipo.item_price = chipo.item_price.apply(dollarizer)
+
+chipo.item_price.sum()
+chipo.order_id.value_counts().count()
+
+order_grouped = chipo.groupby(by=['order_id']).sum()
+order_grouped.mean()['item_price']
+
+# Or 
+
+#chipo.groupby(by=['order_id']).sum().mean()['item_price']
+chipo.item_name.value_counts().count()
+
+#2
+
+
+import pandas as pd
+url = 'https://raw.githubusercontent.com/justmarkham/DAT8/master/data/chipotle.tsv'
+    
+chipo = pd.read_csv(url, sep = '\t')
+# clean the item_price column and transform it in a float
+prices = [float(value[1 : -1]) for value in chipo.item_price]
+
+# reassign the column with the cleaned prices
+chipo.item_price = prices 
+
+# make the comparison
+chipo10 = chipo[chipo['item_price'] > 10.00]
+chipo10.head()
+
+len(chipo10)
+# delete the duplicates in item_name and quantity
+chipo_filtered = chipo.drop_duplicates(['item_name','quantity'])
+
+## select only the ones with quantity equals to 1
+#price_per_item = chipo_filtered[chipo_filtered.quantity == 1]
+
+#
+price_per_item = chipo_filtered[['item_name', 'item_price']]
+
+# sort the values from the most to less expensive
+#price_per_item.sort_values(by = "item_price", ascending = False)
+#chipo.item_name.sort_values()
+
+# OR
+
+chipo.sort_values(by = "item_name")
+chipo.sort_values(by = "item_price", ascending = False).head(1)
+chipo_salad = chipo[chipo.item_name == "Veggie Salad Bowl"]
+
+len(chipo_salad)
+chipo_drink_steak_bowl = chipo[(chipo.item_name == "Canned Soda") & (chipo.quantity > 1)]
+len(chipo_drink_steak_bowl)
+
+#4
+
+import pandas as pd
+users = pd.read_table('https://raw.githubusercontent.com/justmarkham/DAT8/master/data/u.user', 
+                      sep='|', index_col='user_id')
+users.head()
+users.groupby('occupation').age.mean()
+# create a function
+def gender_to_numeric(x):
+    if x == 'M':
+        return 1
+    if x == 'F':
+        return 0
+
+# apply the function to the gender column and create a new column
+users['gender_n'] = users['gender'].apply(gender_to_numeric)
+
+
+a = users.groupby('occupation').gender_n.sum() / users.occupation.value_counts() * 100 
+
+# sort to the most male 
+a.sort_values(ascending = False)
+users.groupby('occupation').age.agg(['min', 'max'])
+users.groupby(['occupation', 'gender']).age.mean()
+# create a data frame and apply count to gender
+gender_ocup = users.groupby(['occupation', 'gender']).agg({'gender': 'count'})
+
+# create a DataFrame and apply count for each occupation
+occup_count = users.groupby(['occupation']).agg('count')
+
+# divide the gender_ocup per the occup_count and multiply per 100
+occup_gender = gender_ocup.div(occup_count, level = "occupation") * 100
+
+# present all rows from the 'gender column'
+occup_gender.loc[: , 'gender']
