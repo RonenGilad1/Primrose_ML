@@ -1,0 +1,61 @@
+import numpy as np
+import pandas as pd
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.model_selection import train_test_split
+
+def pre_process_data(df):
+    numerical_df = pd.get_dummies(df).fillna(method='ffill')
+    y = numerical_df.SalePrice.values
+    x = numerical_df.drop(['Id', 'SalePrice'], axis=1).values
+    return x, y
+
+def gradient_boosted_trees_train(x, y):
+    ensamble_list = []
+    regr_1 = DecisionTreeRegressor(max_depth=2)
+    regr_1.fit(x, y)
+    y_pred = regr_1.predict(x)
+    ensamble_list.append(regr_1)
+    score_prev = -1
+    score_curr = regr_1.score(x, y)
+    print('iter# 0' + ' score_curr: ' + str(score_curr))
+    iter = 1
+    while abs(score_curr-score_prev) > 0.00001:
+        score_prev = score_curr
+        h = DecisionTreeRegressor(max_depth=5).fit(x, (y - y_pred))  # error tree
+        ensamble_list.append(h)
+        y_correction = h.predict(x)
+        y_pred = y_pred + y_correction
+        score_curr = (1 - (((y - y_pred) ** 2).sum()) / ((y - y.mean()) ** 2).sum())
+        print('iter# ' + str(iter) + ' score_curr: ' + str(score_curr))
+        iter += 1
+    return ensamble_list
+
+
+def gradient_boosted_trees_predict_and_score(x, true_y,ensamble_list):
+    y_pred = np.zeros(( 1,x.shape[0]))
+    for i in range(len(ensamble_list)):
+        y_pred += ensamble_list[i].predict(x)
+    score_curr = (1 - (((true_y - y_pred) ** 2).sum()) / ((true_y - true_y.mean()) ** 2).sum())
+    return score_curr
+
+
+def main():
+    data_path_train = r'train.csv'
+    df_train = pd.read_csv(data_path_train)
+    x_train, y_train = pre_process_data(df_train)
+    X_train, X_test, Y_train, y_test = train_test_split(x_train,y_train,random_state=42)
+    ensamble_list = gradient_boosted_trees_train(X_train, Y_train)
+    score_xgboost = gradient_boosted_trees_predict_and_score(X_test,y_test, ensamble_list)
+    print(score_xgboost)
+    
+    regr_1 = DecisionTreeRegressor(max_depth=2)
+    regr_1.fit(x_train, y_train)
+    y_pred_t = regr_1.predict(X_test)
+  
+    score_curr = (1 - (((y_test - y_pred_t) ** 2).sum()) / ((y_test- y_test.mean()) ** 2).sum())
+    print(score_curr)
+
+if __name__ == '__main__':
+    main()
+
+
